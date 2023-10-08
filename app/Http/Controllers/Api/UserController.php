@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Models\User;
 
-class RegisterController extends Controller
+class UserController extends Controller
 {
     public function store(Request $request){
         $request->validate([
