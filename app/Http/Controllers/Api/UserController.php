@@ -3,22 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\UserRequest;
 use Laravel\Passport\Passport;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 
 use App\Models\User;
 
 class UserController extends Controller
 {
-    public function store(Request $request){
-        $request->validate([
-            'name' => 'nullable|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
+    public function store(UserRequest $request){
         $user = User::create($request->all());
 
         return response($user, 200);
@@ -30,10 +25,19 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(Request $request)
-    {
-        $credentials = $request->only('email', 'password');
+    public function login(Request $request){
+            // Validación personalizada sin usar UserRequest
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ]);
 
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+
+        // Intentar autenticar al usuario
+        $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             $token = $user->createToken('TokenName')->accessToken;
