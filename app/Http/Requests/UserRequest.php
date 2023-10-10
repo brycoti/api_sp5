@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Unique;
 
 class UserRequest extends FormRequest
 {
@@ -14,6 +16,19 @@ class UserRequest extends FormRequest
         return true;
     }
 
+
+    /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation()
+    {
+        if (!$this->has('name')) {
+            // Si el campo 'name' no se proporciona en la solicitud, establece 'anonymous' como valor predeterminado.
+            $this->merge(['name' => 'Anonymous']);
+        }
+    }
+
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -22,8 +37,8 @@ class UserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'nullable|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'name' => 'string|max:40|unique:users,name',
+            'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
         ];
     }

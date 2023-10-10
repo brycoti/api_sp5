@@ -14,7 +14,12 @@ use App\Models\User;
 class UserController extends Controller
 {
     public function store(UserRequest $request){
+
+
+
         $user = User::create($request->all());
+
+        
 
         return response($user, 200);
     }

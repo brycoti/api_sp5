@@ -25,6 +25,9 @@ Route::post('players', [UserController::class, 'store'])->name('api.v1.register'
 
 Route::post('login', [UserController::class, 'login'])->name('api.v1.login');
 
+Route::middleware('auth:api')->post('roll-dice', 'DiceRollController@rollDice');
+
+
 /*
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
