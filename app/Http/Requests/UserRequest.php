@@ -16,30 +16,21 @@ class UserRequest extends FormRequest
         return true;
     }
 
-
-    /**
-     * Prepare the data for validation.
-     */
-    protected function prepareForValidation()
-    {
-        if (!$this->has('name')) {
-            // Si el campo 'name' no se proporciona en la solicitud, establece 'anonymous' como valor predeterminado.
-            $this->merge(['name' => 'Anonymous']);
-        }
+    public function rules(): array {
+        return [
+            'name' => 'nullable',
+            'email' => 'required|email',
+            'password' => 'required|min:8|confirmed',
+        ];
     }
 
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
-    {
+    public function messages(): array {
         return [
-            'name' => 'string|max:40|unique:users,name',
-            'email' => 'required|string|email|max:255|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
+            'name.required' => ' :attribute is required',
+            'email.required' => ':attribute is required',
+            'email.email' => ':attribute must be a valid email',
+            'password.required' => ':attribute is required',
+            'password.min' => ':attribute must be at least 8 characters',
         ];
     }
 }

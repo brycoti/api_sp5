@@ -8,6 +8,7 @@ use Laravel\Passport\Passport;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 use App\Models\User;
 
@@ -15,13 +16,39 @@ class UserController extends Controller
 {
     public function store(UserRequest $request){
 
+        $rules = $request->rules();
+
+        $messages = $request->messages();
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) { // verify if validation fails
+            return response()->json(['error' => $validator->errors()], 422);
+        }
+
+        $userNameExists = User::where('name', $request->name) ->first();
+        $userEmailExist = User::where('email', $request->email) ->first();
+
+        if($userNameExists){ // verify if user Name already exists
+            return response()->json(['error' => 'Name already exists'], 422);
+        }
+
+        if($userEmailExist){ // verify if user Email already exists
+            return response()->json(['error' => 'Email already exists'], 422);
+        }
+
+        $name = $request->filled('name') ? $request->name : 'Anonymous';
+         // set default Anonymous name if name is empty
+
+         $user = User::create([
+             'name' => $name,
+             'email' => $request->email,
+             'password' => Hash::make($request->password),
+         ]);
+
+         return response()->json($user, 200);
 
 
-        $user = User::create($request->all());
-
-        
-
-        return response($user, 200);
     }
 
     /**
