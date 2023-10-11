@@ -47,8 +47,6 @@ class UserController extends Controller
          ]);
 
          return response()->json($user, 200);
-
-
     }
 
     /**
@@ -78,5 +76,27 @@ class UserController extends Controller
         }
 
         return response()->json(['error' => 'Unauthorized'], 401);
+    }
+
+    public function update (Request $request, $id){
+
+        $user = User::find($id); 
+
+        if (!$user) { // verify if user  does  not exists
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        if ($user->id !== Auth::user()->id) { // Check if user is the same as the authenticated user.
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    
+        $editName = $request->input('name');
+    
+        if ($editName !== $user->name) { // If name is different, update the user.
+            $user->update(['name' => $editName]);
+            return response()->json($user, 200);
+        }
+    
+        return response()->json(['message' => 'No changes were made.'], 200);  // If no changes were made, return 200.
     }
 }
