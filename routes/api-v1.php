@@ -21,11 +21,19 @@ Route::get('/prueba', function () {
     return "prueba";
 });
 
-Route::post('players', [UserController::class, 'store'])->name('api.v1.register');
+Route::post('/players', [UserController::class, 'store'])->name('api.v1.register');
 
-Route::post('login', [UserController::class, 'login'])->name('api.v1.login');
+Route::post('/login', [UserController::class, 'login'])->name('api.v1.login');
 
-Route::middleware('auth:api')->post('roll-dice', 'DiceRollController@rollDice');
+Route::middleware('auth:api')->group(function () {
+    Route::put('/players/{id}', [UserController::class, 'update'])->name('api.v1.update');
+    
+    
+    // Otras rutas que requieran el middleware 'auth:api' pueden ir aquí.
+});
+
+
+// Route::middleware('auth:api')->post('roll-dice', 'DiceRollController@rollDice');
 
 
 /*
