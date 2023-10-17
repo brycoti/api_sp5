@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\DiceRollController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\Passport;
@@ -26,7 +27,9 @@ Route::post('/players', [UserController::class, 'store'])->name('api.v1.register
 Route::post('/login', [UserController::class, 'login'])->name('api.v1.login');
 
 Route::middleware('auth:api')->group(function () {
-    Route::put('/players/{id}', [UserController::class, 'update'])->name('api.v1.update');
+    Route::put('/players/{id}', [UserController::class, 'update'])->name('api.v1.updateName');
+    Route::post('players/{id}/games', [DiceRollController::class, 'rollIt'])->name('api.v1.rollIt');
+
     
     
     // Otras rutas que requieran el middleware 'auth:api' pueden ir aquí.

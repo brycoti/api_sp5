@@ -12,9 +12,14 @@ return new class extends Migration
     public function up(): void{
         Schema::create('dice_rolls', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
             $table->integer('dice1');
             $table->integer('dice2');
-            $table->boolean('win')->default(false);
+            $table->integer('total');
+
+            $table->boolean('win');
             $table->timestamps();
         });
     }
