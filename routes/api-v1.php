@@ -34,8 +34,8 @@ Route::post('/login', [UserController::class, 'login'])->name('api.v1.login');
 Route::middleware('auth:api')->group(function () {
     Route::put('/players/{id}', [UserController::class, 'update'])->name('api.v1.updateName');
     Route::post('/players/{id}/games', [RollDiceController::class, 'rollIt'])->name('api.v1.rollIt');
+    Route::delete('/players/{id}/games', [RollDiceController::class, 'deleteRolls'])->name('api.v1.delete');
 
-    
     // Otras rutas que requieran el middleware 'auth:api' pueden ir aquí.
 });
 
