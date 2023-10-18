@@ -21,6 +21,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'wins',
+        'losses',
+        'gamesPlayed',
+        'successRate',
     ];
 
     /**
@@ -33,6 +37,7 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+
     /**
      * The attributes that should be cast.
      *
@@ -42,4 +47,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+
+    public function DiceRolls(){
+        return $this->hasMany(DiceRoll::class);
+    }
 }

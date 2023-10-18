@@ -49,14 +49,9 @@ class UserController extends Controller
          return response()->json($user, 200);
     }
 
-    /**
-     * Handle a login request to the application and generate an access token.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function login(Request $request){
-            // Validación personalizada sin usar UserRequest
+
+    public function login(Request $request){ // 
+            
         $validator = Validator::make($request->all(), [
             'email' => 'required|string|email',
             'password' => 'required|string',
@@ -66,11 +61,11 @@ class UserController extends Controller
             return response()->json(['error' => $validator->errors()], 400);
         }
 
-        // Intentar autenticar al usuario
-        $credentials = $request->only('email', 'password');
-        if (Auth::attempt($credentials)) {
+        
+        $credentials = $request->only('email', 'password'); 
+        if (Auth::attempt($credentials)) { // Check if the credentials are correct
             $user = Auth::user();
-            $token = $user->createToken('TokenName')->accessToken;
+            $token = $user->createToken('TokenName')->accessToken; // Create a token for the user
 
             return response()->json(['token' => $token], 200);
         }
