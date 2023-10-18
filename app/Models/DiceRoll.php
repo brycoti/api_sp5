@@ -15,6 +15,7 @@ class DiceRoll extends Model
         'dice2',
         'total',
         'win',
+        
     ];
 
 
