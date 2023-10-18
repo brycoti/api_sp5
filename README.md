@@ -1,3 +1,36 @@
+# Configuración de Laravel Passport para Clientes de Acceso Personal
+
+Este README te guiará a través de los pasos para configurar Laravel Passport y crear un cliente de acceso personal. Los clientes de acceso personal se utilizan para permitir que aplicaciones de confianza se autentiquen e interactúen con tu API en nombre de un usuario sin requerir el consentimiento explícito del usuario para cada solicitud.
+
+## Pasos de Configuración
+
+### Paso 1: Instalar Passport
+
+Si aún no has instalado Passport en tu aplicación Laravel, puedes hacerlo utilizando Composer:
+
+```bash
+composer require laravel/passport
+Paso 2: Ejecutar Migraciones
+A continuación, ejecuta las migraciones de la base de datos para crear las tablas necesarias para Passport:
+
+bash
+Copy code
+php artisan migrate
+Paso 3: Crear un Cliente de Acceso Personal
+Puedes crear un cliente de acceso personal utilizando el comando Artisan passport:client. Al ejecutar este comando, especifica la opción --personal para crear un cliente de acceso personal:
+
+bash
+Copy code
+php artisan passport:client --personal
+Este comando te pedirá que le des un nombre al cliente (por ejemplo, "Cliente de Acceso Personal"). También puedes dejar en blanco el campo "URI de redirección" para los clientes de acceso personal.
+
+Paso 4: Obtener las Credenciales del Cliente
+Después de ejecutar el comando anterior, recibirás las credenciales del cliente, que incluyen un ID de cliente y un secreto de cliente. Asegúrate de almacenar estas credenciales de manera segura, ya que se utilizarán para autenticar tu aplicación con la API.
+
+Uso del Cliente de Acceso Personal
+En tu código de aplicación, puedes utilizar estas credenciales del cliente para autenticar las solicitudes a la API mediante el uso de un Bearer Token. Para obtener el token, puedes iniciar sesión una vez que hayas creado el usuario. Luego, utiliza ese token en las solicitudes a la API en Postman u otras herramientas similares.
+
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
