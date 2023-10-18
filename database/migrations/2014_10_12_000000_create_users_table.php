@@ -17,9 +17,9 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
 
-            $table->integer('wins');
-            $table->integer('losses');
-            $table->float('succes rate', 3, 2);
+            $table->integer('wins')->default(0);
+            $table->integer('losses')->default(0);
+            $table->float('succes rate', 3, 2)->default(0);
 
 
 
