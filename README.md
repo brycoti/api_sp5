@@ -9,7 +9,7 @@ Este README te guiará a través de los pasos para configurar Laravel Passport y
 Si aún no has instalado Passport en tu aplicación Laravel, puedes hacerlo utilizando Composer:
 
 ```bash
-composer require laravel/passport
+composer require laravel/passport 
 Paso 2: Ejecutar Migraciones
 A continuación, ejecuta las migraciones de la base de datos para crear las tablas necesarias para Passport:
 
