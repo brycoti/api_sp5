@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('dice2');
             $table->integer('total');
 
-            $table->boolean('win');
+            $table->boolean('win')->default(0);
             $table->timestamps();
         });
     }

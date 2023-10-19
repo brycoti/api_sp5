@@ -28,15 +28,7 @@ class DiceRollsTableSeeder extends Seeder
         'user_id' => 1,
         'dice1' => 1,
         'dice2' => 6,
-        'total' => 1, 
-        'created_at' => now(),
-        'updated_at' => now(),
-    ]);
-    DB::table('dice_rolls')->insert([
-        'user_id' => 1,
-        'dice1' => 1,
-        'dice2' => 6,
-        'total' => 1,
+        'total' => 7, 
         'win' => 1,
         'created_at' => now(),
         'updated_at' => now(),
@@ -45,7 +37,16 @@ class DiceRollsTableSeeder extends Seeder
         'user_id' => 1,
         'dice1' => 1,
         'dice2' => 6,
-        'total' => 1,
+        'total' => 7,
+        'win' => 1,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+    DB::table('dice_rolls')->insert([
+        'user_id' => 1,
+        'dice1' => 1,
+        'dice2' => 6,
+        'total' => 7,
         'win' => 1, 
         'created_at' => now(),
         'updated_at' => now(),
@@ -68,6 +69,15 @@ class DiceRollsTableSeeder extends Seeder
         'dice2' => 3,
         'total' => 7,
         'win' => 1, //1 para ganar
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+    DB::table('dice_rolls')->insert([
+        'user_id' => 3, // Id 3 player'
+        'dice1' => 1,
+        'dice2' => 2,
+        'total' => 3,
+        'win' => 0, //
         'created_at' => now(),
         'updated_at' => now(),
     ]);
