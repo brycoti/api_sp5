@@ -20,4 +20,5 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/players/{id}/games', [RollDiceController::class, 'rollIt'])->name('api.v1.rollIt');
     Route::delete('/players/{id}/games', [RollDiceController::class, 'deleteRolls'])->name('api.v1.delete');
     Route::get('/players', [UserController::class, 'index'])->name('api.v1.index');
+    Route::get('/players/{id}/games', [UserController::class, 'show'])->name('api.v1.show');
 });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
+use App\Models\DiceRoll;
 use Laravel\Passport\Passport;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -94,9 +95,7 @@ class UserController extends Controller
         return response()->json(['message' => 'No changes were made.'], 200);  // If no changes were made, return 200.
     }
 
-    
-    public function index()
-    {
+    public function index(){
         $users = User::all();
 
         $userNamesAndSuccessRates = $users->map(function ($user) {
@@ -107,5 +106,15 @@ class UserController extends Controller
         });
 
         return response()->json($userNamesAndSuccessRates, 200);
-}
+    }
+
+    public function show($id){
+        $user = User::find($id);
+        // return all users rollDices where RoolDice.user_id = $id
+
+       $userRolls = DiceRoll::where('user_id', $user->id)->get();
+
+        return response()->json($userRolls, 200);
+
+    }
 }
