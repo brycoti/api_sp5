@@ -49,9 +49,8 @@ class UserController extends Controller
          return response()->json($user, 200);
     }
 
+    public function login(Request $request){ //
 
-    public function login(Request $request){ // 
-            
         $validator = Validator::make($request->all(), [
             'email' => 'required|string|email',
             'password' => 'required|string',
@@ -61,8 +60,8 @@ class UserController extends Controller
             return response()->json(['error' => $validator->errors()], 400);
         }
 
-        
-        $credentials = $request->only('email', 'password'); 
+
+        $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) { // Check if the credentials are correct
             $user = Auth::user();
             $token = $user->createToken('TokenName')->accessToken; // Create a token for the user
@@ -75,7 +74,7 @@ class UserController extends Controller
 
     public function update (Request $request, $id){
 
-        $user = User::find($id); 
+        $user = User::find($id);
 
         if (!$user) { // verify if user  does  not exists
             return response()->json(['error' => 'User not found'], 404);
@@ -84,14 +83,29 @@ class UserController extends Controller
         if ($user->id !== Auth::user()->id) { // Check if user is the same as the authenticated user.
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-    
+
         $editName = $request->input('name');
-    
+
         if ($editName !== $user->name) { // If name is different, update the user.
             $user->update(['name' => $editName]);
             return response()->json($user, 200);
         }
-    
+
         return response()->json(['message' => 'No changes were made.'], 200);  // If no changes were made, return 200.
     }
+
+    
+    public function index()
+    {
+        $users = User::all();
+
+        $userNamesAndSuccessRates = $users->map(function ($user) {
+            return [
+                'name' => $user->name,
+                'successRate' => $user->successRate,
+            ];
+        });
+
+        return response()->json($userNamesAndSuccessRates, 200);
+}
 }
