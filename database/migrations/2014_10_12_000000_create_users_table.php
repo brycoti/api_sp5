@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('gamesPlayed')->default(0);
             $table->decimal('successRate', 5, 2)->default(0);
 
-
+            $table->enum('role', ['user', 'admin'])->default('user');
 
             $table->rememberToken();
             $table->timestamps();

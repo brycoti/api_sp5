@@ -25,6 +25,7 @@ class User extends Authenticatable
         'losses',
         'gamesPlayed',
         'successRate',
+        'role',
     ];
 
     /**
