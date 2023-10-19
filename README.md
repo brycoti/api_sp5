@@ -15,17 +15,25 @@ A continuación, ejecuta las migraciones de la base de datos para crear las tabl
 
 bash
 Copy code
-php artisan key:generate
+php artisan migrate
+
+
+
+
+
+
+Paso 3: Crear un Cliente de Acceso Personal
 
 bash
 Copy code
-php artisan migrate
-Paso 3: Crear un Cliente de Acceso Personal
+php artisan key:generate
+
 Puedes crear un cliente de acceso personal utilizando el comando Artisan passport:client. Al ejecutar este comando, especifica la opción --personal para crear un cliente de acceso personal:
 
 bash
 Copy code
 php artisan passport:client --personal
+
 Este comando te pedirá que le des un nombre al cliente (por ejemplo, "Cliente de Acceso Personal"). También puedes dejar en blanco el campo "URI de redirección" para los clientes de acceso personal.
 
 Paso 4: Obtener las Credenciales del Cliente
