@@ -73,6 +73,13 @@ class UserController extends Controller
         return response()->json(['error' => 'Unauthorized'], 401);
     }
 
+    public function logout(){
+        $user = Auth::user();
+        $user->token()->revoke();
+
+        return response()->json(['message' => 'Successfully logged out'], 200);
+    }
+
     public function update (Request $request, $id){
 
         $user = User::find($id);
