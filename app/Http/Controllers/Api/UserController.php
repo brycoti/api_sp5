@@ -126,4 +126,18 @@ class UserController extends Controller
 
         return response()->json($averageSuccesRate, 200);
     }
+
+    public function loser(){
+        $loser = User::orderBy('successRate', 'asc')->first();
+
+        return response()->json($loser, 200);
+    }
+
+    public function winner(){
+        $winner = User::orderBy('successRate', 'desc')->first();
+
+        return response()->json($winner, 200);
+    }
+
+
 }
