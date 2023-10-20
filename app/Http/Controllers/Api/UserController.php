@@ -110,11 +110,20 @@ class UserController extends Controller
 
     public function show($id){
         $user = User::find($id);
-        // return all users rollDices where RoolDice.user_id = $id
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
 
        $userRolls = DiceRoll::where('user_id', $user->id)->get();
 
         return response()->json($userRolls, 200);
 
+    }
+
+    public function ranking(){
+        $averageSuccesRate = User::avg('successRate');
+
+        return response()->json($averageSuccesRate, 200);
     }
 }

@@ -21,4 +21,7 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('/players/{id}/games', [RollDiceController::class, 'deleteRolls'])->name('api.v1.delete');
     Route::get('/players', [UserController::class, 'index'])->name('api.v1.index');
     Route::get('/players/{id}/games', [UserController::class, 'show'])->name('api.v1.show');
+    Route::get('players/ranking', [UserController::class, 'ranking'])->name('api.v1.ranking');
+    Route::get('players/ranking/loser', [UserController::class, 'loser'])->name('api.v1.loser');
+    Route::get('players/ranking/winner', [UserController::class, 'winner'])->name('api.v1.winner');
 });
