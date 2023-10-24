@@ -10,8 +10,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 use App\Models\User;
+
 
 class UserController extends Controller
 {
@@ -45,7 +47,7 @@ class UserController extends Controller
              'name' => $name,
              'email' => $request->email,
              'password' => Hash::make($request->password),
-         ]);
+         ])->assignRole('user');
 
          return response()->json($user, 200);
     }
@@ -92,7 +94,7 @@ class UserController extends Controller
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        $editName = $request->input('name');
+        $editName = $request->filled('name') ? $request->name : 'Anonymous';
 
         if ($editName !== $user->name) { // If name is different, update the user.
             $user->update(['name' => $editName]);
