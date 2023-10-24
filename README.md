@@ -17,7 +17,16 @@ bash
 Copy code
 php artisan migrate
 
+Paso 2.5 Verify Role Package: If you are using a role package like Spatie's Laravel Permission, ensure that it is properly installed and configured in your Laravel project. You should have run the necessary migrations to create the required tables in your database.
 
+    If you haven't already, run the migration to create the roles and permissions tables:
+
+    
+
+php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider" --tag="migrations"
+php artisan migrate
+
+Also, make sure you've registered the Spatie\Permission\PermissionServiceProvider in your config/app.php file.
 
 
 
@@ -38,6 +47,8 @@ Este comando te pedirá que le des un nombre al cliente (por ejemplo, "Cliente d
 
 Paso 4: Obtener las Credenciales del Cliente
 Después de ejecutar el comando anterior, recibirás las credenciales del cliente, que incluyen un ID de cliente y un secreto de cliente. Asegúrate de almacenar estas credenciales de manera segura, ya que se utilizarán para autenticar tu aplicación con la API.
+
+php artisan passport:keys
 
 Uso del Cliente de Acceso Personal
 En tu código de aplicación, puedes utilizar estas credenciales del cliente para autenticar las solicitudes a la API mediante el uso de un Bearer Token. Para obtener el token, puedes iniciar sesión una vez que hayas creado el usuario. Luego, utiliza ese token en las solicitudes a la API en Postman u otras herramientas similares.
