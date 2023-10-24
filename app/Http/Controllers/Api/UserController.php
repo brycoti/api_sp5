@@ -4,13 +4,16 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
+use App\Models\DiceRoll;
 use Laravel\Passport\Passport;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 use App\Models\User;
+
 
 class UserController extends Controller
 {
@@ -44,14 +47,13 @@ class UserController extends Controller
              'name' => $name,
              'email' => $request->email,
              'password' => Hash::make($request->password),
-         ]);
+         ])->assignRole('user');
 
          return response()->json($user, 200);
     }
 
+    public function login(Request $request){ //
 
-    public function login(Request $request){ // 
-            
         $validator = Validator::make($request->all(), [
             'email' => 'required|string|email',
             'password' => 'required|string',
@@ -61,8 +63,8 @@ class UserController extends Controller
             return response()->json(['error' => $validator->errors()], 400);
         }
 
-        
-        $credentials = $request->only('email', 'password'); 
+
+        $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) { // Check if the credentials are correct
             $user = Auth::user();
             $token = $user->createToken('TokenName')->accessToken; // Create a token for the user
@@ -73,9 +75,16 @@ class UserController extends Controller
         return response()->json(['error' => 'Unauthorized'], 401);
     }
 
+    public function logout(){
+        $user = Auth::user();
+        $user->token()->revoke();
+
+        return response()->json(['message' => 'Successfully logged out'], 200);
+    }
+
     public function update (Request $request, $id){
 
-        $user = User::find($id); 
+        $user = User::find($id);
 
         if (!$user) { // verify if user  does  not exists
             return response()->json(['error' => 'User not found'], 404);
@@ -84,14 +93,60 @@ class UserController extends Controller
         if ($user->id !== Auth::user()->id) { // Check if user is the same as the authenticated user.
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-    
-        $editName = $request->input('name');
-    
+
+        $editName = $request->filled('name') ? $request->name : 'Anonymous';
+
         if ($editName !== $user->name) { // If name is different, update the user.
             $user->update(['name' => $editName]);
             return response()->json($user, 200);
         }
-    
+
         return response()->json(['message' => 'No changes were made.'], 200);  // If no changes were made, return 200.
     }
+
+    public function index(){
+        $users = User::all();
+
+        $userNamesAndSuccessRates = $users->map(function ($user) {
+            return [
+                'name' => $user->name,
+                'successRate' => $user->successRate,
+            ];
+        });
+
+        return response()->json($userNamesAndSuccessRates, 200);
+    }
+
+    public function show($id){
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+       $userRolls = DiceRoll::where('user_id', $user->id)->get();
+
+        return response()->json($userRolls, 200);
+
+    }
+
+    public function ranking(){
+        $averageSuccesRate = User::avg('successRate');
+
+        return response()->json($averageSuccesRate, 200);
+    }
+
+    public function loser(){
+        $loser = User::orderBy('successRate', 'asc')->first();
+
+        return response()->json($loser, 200);
+    }
+
+    public function winner(){
+        $winner = User::orderBy('successRate', 'desc')->first();
+
+        return response()->json($winner, 200);
+    }
+
+
 }

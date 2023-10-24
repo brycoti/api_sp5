@@ -15,9 +15,7 @@ class DiceRoll extends Model
         'dice2',
         'total',
         'win',
-        
     ];
-
 
     public function user() {
         return $this->belongsTo(User::class);
