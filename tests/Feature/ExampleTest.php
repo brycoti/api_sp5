@@ -5,12 +5,17 @@ namespace Tests\Feature;
 // use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\User;
+use App\Models\DiceRoll;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission; 
+
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
 use Laravel\Passport\Client;
 use Laravel\Passport\ClientRepository;
+use Illuminate\Support\Facades\Hash;
 
 
 
@@ -22,8 +27,7 @@ class ExampleTest extends TestCase
     /**
      * Set up the test environment.
      */
-    protected function setUp(): void
-    {
+    protected function setUp(): void{
         parent::setUp();
 
         $clientRepository = new ClientRepository();
@@ -36,35 +40,45 @@ class ExampleTest extends TestCase
         // Manually set the client ID in the Passport configuration
         app()->instance(Client::class, $client);
     }
+    
+    public function test_create_user(): void{
+       
+        Role::create(['name' => 'user']);
 
+        $response = $this->post('v1/players', [
+            'email' => 'test@example.com',
+            'password' => 'password1',
+            'name' => 'tester1',
+            'password_confirmation' => 'password1',
+        ]); 
 
+        $user = User::where('email', 'test@example.com')->first();
+        $user->assignRole('user');
 
-    /**
-     * A basic test example.
-     */
-    public function test_the_application_returns_a_successful_response(): void
-    {
-        $response = $this->get('/');
+        $response->assertStatus(201);
+        
+        $this->assertDatabaseHas('users', [
+            'email' => 'test@example.com',
+            'name' => 'tester1',
+        ]);
 
-        $response->assertStatus(200);
     }
 
-    // login test
-    public function test_login(): void
-    {
-       $user = User::create([
-            'email' => 'test@example.com',
-            'password' => bcrypt('password1'),
-            'name' => 'test',
-            'role' => 'admin',
+    public function test_login(): void{
+       $user2 = User::create([
+            'id' => 2,
+            'email' => 'test@example2.com',
+            'password' => bcrypt('password2'),
+            'name' => 'test2',
+            'role' => 'user',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
 
         $response = $this->post('v1/login', [
-            'email' => 'test@example.com',
-            'password' => 'password1',
+            'email' => 'test@example2.com',
+            'password' => 'password2',
         ]);
         $response->assertStatus(200);
         $response->assertJsonStructure([
@@ -79,13 +93,11 @@ class ExampleTest extends TestCase
         ]);
         $response->assertStatus(401);
         $response->assertJson(['error' => 'Unauthorized']);
-
         
         $response = $this->post('v1/login', [ // email does not exist
             'email' => 'incorrect-email@example.com',
             'password' => 'password1',
         ]);
-        
         $response->assertStatus(401);
         $response->assertJson(['error' => 'Unauthorized']);
 
