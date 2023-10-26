@@ -15,8 +15,7 @@ use Spatie\Permission\Models\Role;
 use App\Models\User;
 
 
-class UserController extends Controller
-{
+class UserController extends Controller{
     public function store(UserRequest $request){
 
         $rules = $request->rules();
