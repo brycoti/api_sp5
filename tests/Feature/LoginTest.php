@@ -5,7 +5,6 @@ namespace Tests\Feature;
 // use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\User;
-use App\Models\DiceRoll;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission; 
 
@@ -19,7 +18,7 @@ use Illuminate\Support\Facades\Hash;
 
 
 
-class ExampleTest extends TestCase
+class LoginTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -40,29 +39,6 @@ class ExampleTest extends TestCase
         // Manually set the client ID in the Passport configuration
         app()->instance(Client::class, $client);
     }
-    
-    public function test_create_user(): void{
-       
-        Role::create(['name' => 'user']);
-
-        $response = $this->post('v1/players', [
-            'email' => 'test@example.com',
-            'password' => 'password1',
-            'name' => 'tester1',
-            'password_confirmation' => 'password1',
-        ]); 
-
-        $user = User::where('email', 'test@example.com')->first();
-        $user->assignRole('user');
-
-        $response->assertStatus(201);
-        
-        $this->assertDatabaseHas('users', [
-            'email' => 'test@example.com',
-            'name' => 'tester1',
-        ]);
-
-    }
 
     public function test_login(): void{
        $user2 = User::create([
@@ -75,8 +51,7 @@ class ExampleTest extends TestCase
             'updated_at' => now(),
         ]);
 
-
-        $response = $this->post('v1/login', [
+        $response = $this->post('v1/login', [ // password matches
             'email' => 'test@example2.com',
             'password' => 'password2',
         ]);
