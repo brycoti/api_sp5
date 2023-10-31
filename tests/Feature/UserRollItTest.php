@@ -13,7 +13,7 @@ use App\Models\DiceRoll;
 
 use function PHPUnit\Framework\assertCount;
 
-class UserRollDiceControllerTest extends TestCase
+class UserRollItTest extends TestCase
 {
 
     use RefreshDatabase;

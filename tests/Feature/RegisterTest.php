@@ -14,7 +14,7 @@ use Laravel\Passport\Client;
 use Laravel\Passport\ClientRepository;
 use Illuminate\Support\Facades\Hash;
 
-class createUserTest extends TestCase {
+class RegisterTest extends TestCase {
     use RefreshDatabase;
     /**
      * Set up the test environment.

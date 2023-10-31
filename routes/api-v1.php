@@ -11,8 +11,6 @@ use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\Passport;
 
 
-
-
 Route::post('/players', [UserController::class, 'store'])->name('user.api.v1.register');
 
 Route::post('/login', [UserController::class, 'login'])->name('user.api.v1.login');
