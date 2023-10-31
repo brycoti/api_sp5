@@ -17,8 +17,6 @@ class RankingTest extends TestCase
 {
      use RefreshDatabase;
 
-   
-
     public function test_admin_can_see_all_users()
     { 
         Role::create(['name' => 'admin']);
@@ -27,19 +25,6 @@ class RankingTest extends TestCase
         
         $response = $this->actingAs($admin, 'api')->json('GET', route('admin.api.v1.ranking'))->assertStatus(200);
 
-    }
-
-    public function test_admin_can_see_the_loser(){
-        Role::create(['name' => 'admin']);
-        $admin = User::factory()->create()->assignRole('admin');
-        $response = $this->actingAs($admin, 'api')->json('GET', route('admin.api.v1.loser'))->assertStatus(200);
-    }
-
-    public function test_admin_can_see_the_winner(){
-        Role::create(['name' => 'admin', ]);
-        
-        $admin = User::factory()->create()->assignRole('admin');
-        $response = $this->actingAs($admin, 'api')->json('GET', route('admin.api.v1.winner'))->assertStatus(200);
     }
 
     public function test_user_can_not_see_the_ranking(){

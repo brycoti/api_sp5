@@ -22,10 +22,6 @@ class LoginTest extends TestCase
 {
     use RefreshDatabase;
 
-
-    /**
-     * Set up the test environment.
-     */
     protected function setUp(): void{
         parent::setUp();
 
