@@ -11,9 +11,11 @@ use Spatie\Permission\Models\Permission;
 use App\Models\User;
 use App\Models\DiceRoll;
 
+
+
 use function PHPUnit\Framework\assertCount;
 
-class UserRollItTest extends TestCase
+class UserRollTest extends TestCase
 {
 
     use RefreshDatabase;
@@ -21,7 +23,10 @@ class UserRollItTest extends TestCase
 
         Role::create(['name' => 'user']); 
 
-        $user = User::factory()->create()->assignRole('user');
+        $this->assertCount(0, DiceRoll::all());
+        $this->assertDatabaseCount('users', 0);
+
+        $user = User::factory()->create()->assignRole('user'); 
 
         $response = $this->actingAs($user, 'api')->json('POST', route('user.api.v1.rollIt', ['id' => $user->id]))
         ->assertStatus(200)->assertJsonStructure([
@@ -32,11 +37,18 @@ class UserRollItTest extends TestCase
             'message',
         ]);
 
-        $this->assertDatabaseHas('dice_rolls', [
-            'user_id' => $user->id
-        ]);
+        $this->assertCount(1, DiceRoll::all()); // El usuario crea una tirada de dado
 
         $response->dump();
-        
+
+        $response->assertStatus(200);
+
+        $response = $this->assertDatabaseHas('users', [ // El usuario guarda la tirada de dado
+            'gamesPlayed' => 1,
+        ]);
+
+        $this->assertDatabaseCount('users', 1); // El usuario se crea
     }
+
+    
 }

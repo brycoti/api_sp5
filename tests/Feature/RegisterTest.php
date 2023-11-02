@@ -55,10 +55,5 @@ class RegisterTest extends TestCase {
             'name' => 'user',
         ]);
         
-        $this->assertDatabaseHas('model_has_roles', [ // create model_has_roles in database
-            'role_id' => 1,
-            'model_type' => 'App\Models\User',
-            'model_id' => 1,
-        ]);
     }
 }

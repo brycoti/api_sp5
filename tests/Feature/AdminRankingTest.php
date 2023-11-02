@@ -13,7 +13,7 @@ use Laravel\Passport\Passport;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission; 
 
-class RankingTest extends TestCase
+class AdminRankingTest extends TestCase
 {
      use RefreshDatabase;
 
