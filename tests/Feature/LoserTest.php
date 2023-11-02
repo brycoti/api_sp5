@@ -17,4 +17,10 @@ class LoserTest extends TestCase
         $response = $this->actingAs($admin, 'api')->json('GET', route('admin.api.v1.loser'))->assertStatus(200);
     }
 
+    public function test_user_can_not_see_the_loser(){
+        Role::create(['name' => 'user']);
+        $user = User::factory()->create()->assignRole('user');
+        $response = $this->actingAs($user, 'api')->json('GET', route('admin.api.v1.loser'))->assertStatus(403);
+    }
+
 }
