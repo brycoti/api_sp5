@@ -15,8 +15,7 @@ use Spatie\Permission\Models\Role;
 use App\Models\User;
 
 
-class UserController extends Controller
-{
+class UserController extends Controller{
     public function store(UserRequest $request){
 
         $rules = $request->rules();
@@ -49,7 +48,7 @@ class UserController extends Controller
              'password' => Hash::make($request->password),
          ])->assignRole('user');
 
-         return response()->json($user, 200);
+         return response()->json($user, 201);
     }
 
     public function login(Request $request){ //
@@ -77,6 +76,11 @@ class UserController extends Controller
 
     public function logout(){
         $user = Auth::user();
+        
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
         $user->token()->revoke();
 
         return response()->json(['message' => 'Successfully logged out'], 200);
@@ -114,6 +118,10 @@ class UserController extends Controller
             ];
         });
 
+        if ($userNamesAndSuccessRates->isEmpty()) {
+            return response()->json(['error' => 'No users found'], 404);
+        }
+
         return response()->json($userNamesAndSuccessRates, 200);
     }
 
@@ -126,6 +134,10 @@ class UserController extends Controller
 
        $userRolls = DiceRoll::where('user_id', $user->id)->get();
 
+        if ($userRolls->isEmpty()) {
+            return response()->json(['error' => 'No rolls found'], 404);
+        }
+
         return response()->json($userRolls, 200);
 
     }
@@ -133,20 +145,32 @@ class UserController extends Controller
     public function ranking(){
         $averageSuccesRate = User::avg('successRate');
 
+        if (!$averageSuccesRate) {
+            return response()->json(['error' => 'No users found'], 404);
+        }
+
         return response()->json($averageSuccesRate, 200);
     }
 
     public function loser(){
         $loser = User::orderBy('successRate', 'asc')->first();
 
+        if (!$loser) {
+            return response()->json(['error' => 'No users found'], 404);
+        }
+
         return response()->json($loser, 200);
+
     }
 
     public function winner(){
         $winner = User::orderBy('successRate', 'desc')->first();
 
+        if (!$winner) {
+            return response()->json(['error' => 'No users found'], 404);
+        }
+
         return response()->json($winner, 200);
     }
-
 
 }
