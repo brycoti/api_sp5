@@ -20,7 +20,7 @@ class UserRequest extends FormRequest
         return [
             'name' => 'nullable',
             'email' => 'required|email',
-            'password' => 'required|min:8|confirmed',
+            'password' => 'required|min:10|confirmed',
         ];
     }
 
@@ -30,7 +30,7 @@ class UserRequest extends FormRequest
             'email.required' => ':attribute is required',
             'email.email' => ':attribute must be a valid email',
             'password.required' => ':attribute is required',
-            'password.min' => ':attribute must be at least 8 characters',
+            'password.min' => ':attribute must be at least 10 characters',
         ];
     }
 }
