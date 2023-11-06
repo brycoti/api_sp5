@@ -119,6 +119,9 @@ class UserController extends Controller{
             return [
                 'name' => $user->name,
                 'successRate' => $user->successRate,
+                'wins' => $user->wins,
+                'losses' => $user->losses,
+                'gamesPlayed' => $user->gamesPlayed
             ];
         });
 
