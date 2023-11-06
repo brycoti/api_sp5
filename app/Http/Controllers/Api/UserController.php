@@ -181,23 +181,39 @@ class UserController extends Controller{
     }
 
     public function loser(){
-        $loser = User::orderBy('successRate', 'asc')->first();
+        $user = User::orderBy('successRate', 'asc')->first();
 
-        if (!$loser) {
+        if (!$user) {
             return response()->json(['error' => 'No users found'], 404);
         }
 
+        $loser = [
+                'name' => $user->name,
+                'successRate' => $user->successRate,
+                'wins' => $user->wins,
+                'losses' => $user->losses,
+                'gamesPlayed' => $user->gamesPlayed,
+        ];
+        
         return response()->json($loser, 200);
 
     }
 
     public function winner(){
-        $winner = User::orderBy('successRate', 'desc')->first();
+        $user = User::orderBy('successRate', 'desc')->first();
 
-        if (!$winner) {
+        if (!$user) {
             return response()->json(['error' => 'No users found'], 404);
         }
 
+        $winner = [
+            'name' => $user->name,
+            'successRate' => $user->successRate,
+            'wins' => $user->wins,
+            'losses' => $user->losses,
+            'gamesPlayed' => $user->gamesPlayed,
+        ];
+        
         return response()->json($winner, 200);
     }
 
