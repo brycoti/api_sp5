@@ -147,6 +147,10 @@ class UserController extends Controller{
             return response()->json(['error' => 'User not found'], 404);
         }
 
+        if ($user->id !== Auth::user()->id) { // Check if user is the same as the authenticated user.
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
        $userRolls = DiceRoll::where('user_id', $user->id)->get();
 
         if ($userRolls->isEmpty()) {
