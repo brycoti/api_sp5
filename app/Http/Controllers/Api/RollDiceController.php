@@ -8,6 +8,7 @@ use App\Models\DiceRoll;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Auth;
 
 class RollDiceController extends Controller
 {
@@ -20,6 +21,10 @@ class RollDiceController extends Controller
             return response()->json([
                 'message' => 'User not found.',
             ], 404);
+        }
+
+        if ($user->id !== Auth::user()->id) { // Check if user is the same as the authenticated user.
+            return response()->json(['message' => 'Unauthorized'], 401);
         }
 
         $dice1 = rand(1, 6);
@@ -70,10 +75,21 @@ class RollDiceController extends Controller
             ], 404);
         }
 
-        DiceRoll::where('user_id', $user->id)->delete();
+        if ($user->id !== Auth::user()->id) { // Check if user is the same as the authenticated user.
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
 
+
+        DiceRoll::where('user_id', $user->id)->delete();
+        // Reset the user's wins, losses, and gamesPlayed
+        $user->wins = 0;
+        $user->losses = 0;
+        $user->gamesPlayed = 0;
+        $user->successRate = 0; 
+        $user->save();
+        
         return response()->json([
-            'message' => 'Rolls deleted.',
+            'message' => 'Rolls deleted and user stats reset successfully.',
         ], 200);
         
     }

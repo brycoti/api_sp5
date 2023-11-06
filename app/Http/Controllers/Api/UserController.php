@@ -13,9 +13,11 @@ use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
 use App\Models\User;
-
+use Spatie\Permission\Traits\HasRoles;
 
 class UserController extends Controller{
+
+    use HasRoles;
     public function store(UserRequest $request){
 
         $rules = $request->rules();
@@ -100,6 +102,10 @@ class UserController extends Controller{
 
         $editName = $request->filled('name') ? $request->name : 'Anonymous';
 
+        if ($editName !== 'Anonymous' && User::where('name', $editName)->where('id', '!=', $user->id)->exists()) {
+            return response()->json(['error' => 'Name is already in use'], 422);
+        }
+
         if ($editName !== $user->name) { // If name is different, update the user.
             $user->update(['name' => $editName]);
             return response()->json($user, 200);
@@ -112,9 +118,18 @@ class UserController extends Controller{
         $users = User::all();
 
         $userNamesAndSuccessRates = $users->map(function ($user) {
+            $roleNames = $user->getRoleNames();
             return [
                 'name' => $user->name,
+                'email' => $user->email,
+                'email_verified_at' => $user->email_verified_at,
                 'successRate' => $user->successRate,
+                'wins' => $user->wins,
+                'losses' => $user->losses,
+                'gamesPlayed' => $user->gamesPlayed,
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
+                'role' => $roleNames,
             ];
         });
 
@@ -132,6 +147,10 @@ class UserController extends Controller{
             return response()->json(['error' => 'User not found'], 404);
         }
 
+        if ($user->id !== Auth::user()->id) { // Check if user is the same as the authenticated user.
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
        $userRolls = DiceRoll::where('user_id', $user->id)->get();
 
         if ($userRolls->isEmpty()) {
@@ -143,33 +162,62 @@ class UserController extends Controller{
     }
 
     public function ranking(){
-        $averageSuccesRate = User::avg('successRate');
+        
+        $users = User::all();
 
-        if (!$averageSuccesRate) {
+        if ($users->isEmpty()) {
             return response()->json(['error' => 'No users found'], 404);
         }
 
+
+        $averageSuccesRate = $users->map(function ($user) {
+            return [
+                'name' => $user->name,
+                'successRate' => $user->successRate,
+                'wins' => $user->wins,
+                'losses' => $user->losses,
+                'gamesPlayed' => $user->gamesPlayed,
+            ];
+        })->sortByDesc('successRate')->values(); // Sort the users by success rate in descending order
+
+       
         return response()->json($averageSuccesRate, 200);
     }
 
     public function loser(){
-        $loser = User::orderBy('successRate', 'asc')->first();
+        $user = User::orderBy('successRate', 'asc')->first();
 
-        if (!$loser) {
+        if (!$user) {
             return response()->json(['error' => 'No users found'], 404);
         }
 
+        $loser = [
+                'name' => $user->name,
+                'successRate' => $user->successRate,
+                'wins' => $user->wins,
+                'losses' => $user->losses,
+                'gamesPlayed' => $user->gamesPlayed,
+        ];
+        
         return response()->json($loser, 200);
 
     }
 
     public function winner(){
-        $winner = User::orderBy('successRate', 'desc')->first();
+        $user = User::orderBy('successRate', 'desc')->first();
 
-        if (!$winner) {
+        if (!$user) {
             return response()->json(['error' => 'No users found'], 404);
         }
 
+        $winner = [
+            'name' => $user->name,
+            'successRate' => $user->successRate,
+            'wins' => $user->wins,
+            'losses' => $user->losses,
+            'gamesPlayed' => $user->gamesPlayed,
+        ];
+        
         return response()->json($winner, 200);
     }
 
