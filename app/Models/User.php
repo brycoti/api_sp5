@@ -56,4 +56,7 @@ class User extends Authenticatable
     public function DiceRolls(){
         return $this->hasMany(DiceRoll::class);
     }
+
+    
+
 }

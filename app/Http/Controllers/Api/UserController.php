@@ -13,9 +13,11 @@ use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
 use App\Models\User;
-
+use Spatie\Permission\Traits\HasRoles;
 
 class UserController extends Controller{
+
+    use HasRoles;
     public function store(UserRequest $request){
 
         $rules = $request->rules();
@@ -116,12 +118,18 @@ class UserController extends Controller{
         $users = User::all();
 
         $userNamesAndSuccessRates = $users->map(function ($user) {
+            $roleNames = $user->getRoleNames();
             return [
                 'name' => $user->name,
+                'email' => $user->email,
+                'email_verified_at' => $user->email_verified_at,
                 'successRate' => $user->successRate,
                 'wins' => $user->wins,
                 'losses' => $user->losses,
-                'gamesPlayed' => $user->gamesPlayed
+                'gamesPlayed' => $user->gamesPlayed,
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
+                'role' => $roleNames,
             ];
         });
 
@@ -150,12 +158,25 @@ class UserController extends Controller{
     }
 
     public function ranking(){
-        $averageSuccesRate = User::avg('successRate');
+        
+        $users = User::all();
 
-        if (!$averageSuccesRate) {
+        if ($users->isEmpty()) {
             return response()->json(['error' => 'No users found'], 404);
         }
 
+
+        $averageSuccesRate = $users->map(function ($user) {
+            return [
+                'name' => $user->name,
+                'successRate' => $user->successRate,
+                'wins' => $user->wins,
+                'losses' => $user->losses,
+                'gamesPlayed' => $user->gamesPlayed,
+            ];
+        })->sortByDesc('successRate')->values(); // Sort the users by success rate in descending order
+
+       
         return response()->json($averageSuccesRate, 200);
     }
 
