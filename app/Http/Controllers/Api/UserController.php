@@ -100,6 +100,10 @@ class UserController extends Controller{
 
         $editName = $request->filled('name') ? $request->name : 'Anonymous';
 
+        if ($editName !== 'Anonymous' && User::where('name', $editName)->where('id', '!=', $user->id)->exists()) {
+            return response()->json(['error' => 'Name is already in use'], 422);
+        }
+
         if ($editName !== $user->name) { // If name is different, update the user.
             $user->update(['name' => $editName]);
             return response()->json($user, 200);
