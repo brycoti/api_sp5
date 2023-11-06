@@ -8,6 +8,7 @@ use App\Models\DiceRoll;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Auth;
 
 class RollDiceController extends Controller
 {
@@ -20,6 +21,10 @@ class RollDiceController extends Controller
             return response()->json([
                 'message' => 'User not found.',
             ], 404);
+        }
+
+        if ($user->id !== Auth::user()->id) { // Check if user is the same as the authenticated user.
+            return response()->json(['message' => 'Unauthorized'], 401);
         }
 
         $dice1 = rand(1, 6);
