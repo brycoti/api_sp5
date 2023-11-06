@@ -52,11 +52,7 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-
     public function DiceRolls(){
         return $this->hasMany(DiceRoll::class);
     }
-
-    
-
 }
